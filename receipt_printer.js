@@ -46,7 +46,6 @@ const [time_str, ...items] =
       .substr(1)
       .split("&")
 
-let row_count = 0
 items.forEach(item => {
     const [id, positions_str] = item.split("=")
         
@@ -93,8 +92,6 @@ items.forEach(item => {
     })
 
     receipt_table.appendChild(tbody)
-
-    row_count += rows.length
 })
 
 const date_str =
@@ -102,7 +99,7 @@ const date_str =
     + new Date(Number(time_str.split("=")[1])*86400000)
     .toLocaleDateString("en-UK", {day: "2-digit", month: "short", year: "2-digit"})
 
-if(row_count>1) {
+if(items.length > 1 || items[0].includes("_")) {
     const date_cell = document.createElement("th")
     date_cell.textContent = date_str
     date_cell.colSpan = 3
