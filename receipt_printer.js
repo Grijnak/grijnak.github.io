@@ -36,74 +36,93 @@ const item_names = {
     206: "Xanax"
 }
 
-const rows = []
+const receipt_table = document.getElementById("receipt")
 let sum = 0
       
-window
-    .location
-    .search
-    .substr(1)
-    .split("&")
-    .forEach(item => {
-        const [id, positions] = item.split("=")
-        
-        const img = document.createElement("img")
-        img.src =
-            "https://www.torn.com/images/items/"
-            + id
-            + "/large.png"
-        
-        const first_line = rows.length
-        
-        positions
-            .split("_")
-            .forEach(position => {
-                const cells = [
-                    document.createElement("td"),
-                    document.createElement("td"),
-                    document.createElement("td"),
-                    document.createElement("td"),
-                    document.createElement("td")
-                ] 
-                const [qty, price] = position.split(".").map(Number)
-                cells[2].textContent = formatNumber(qty)
-                cells[3].textContent = "$" + formatNumber(price)
-                cells[4].textContent = "$" + formatNumber(qty*price)
-                sum += qty*price
-                rows.push(cells)
-            })
+const [time_str, ...items] =
+      window
+      .location
+      .search
+      .substr(1)
+      .split("&")
 
-        rows[first_line][0].appendChild(img)
-        rows[first_line][1].textContent = item_names[id]
+let row_count = 0
+items.forEach(item => {
+    const [id, positions_str] = item.split("=")
+        
+    const rows = []
+    
+    positions_str.split("_").forEach(position => {
+        const cells = [
+            document.createElement("td"),
+            document.createElement("td"),
+            document.createElement("td")
+        ] 
+        const [qty, price] = position.split(".").map(Number)
+        cells[0].textContent = formatNumber(qty)
+        cells[1].textContent = "$" + formatNumber(price)
+        cells[2].textContent = "$" + formatNumber(qty*price)
+        sum += qty*price
+        rows.push(cells)
     })
 
-const tbody = document.createElement("tbody")
+    const name_cell = document.createElement("td")
+    name_cell.textContent = item_names[id]
+    name_cell.rowSpan = rows.length
 
-rows.forEach(row => {
-    const elem = document.createElement("tr")
-    row.forEach(c => {elem.appendChild(c)})
-    tbody.appendChild(elem)
+    rows[0].unshift(name_cell)
+
+    const img = document.createElement("img")
+    img.src =
+        "https://www.torn.com/images/items/"
+        + id
+        + "/large.png"
+
+    const img_cell = document.createElement("th")
+    img_cell.rowSpan = rows.length
+    img_cell.appendChild(img)
+
+    rows[0].unshift(img_cell)
+
+    const tbody = document.createElement("tbody")
+
+    rows.forEach(row => {
+        const elem = document.createElement("tr")
+        row.forEach(c => {elem.appendChild(c)})
+        tbody.appendChild(elem)
+    })
+
+    receipt_table.appendChild(tbody)
+
+    row_count += rows.length
 })
 
-const receipt_table = document.getElementById("receipt")
+const date_str =
+    "Date: "
+    + new Date(Number(time_str.split("=")[1])*86400000)
+    .toLocaleDateString("en-UK", {day: "2-digit", month: "short", year: "2-digit"})
 
-receipt_table.appendChild(tbody)
+if(row_count>1) {
+    const date_cell = document.createElement("th")
+    date_cell.textContent = date_str
+    date_cell.colSpan = 3
 
-if(rows.length>1) {
-    const sum_label_cell = document.createElement("td")
-    sum_label_cell.textContent = "Sum:"
-    sum_label_cell.colSpan = 4
-    sum_label_cell.style.textAlign = "right"
-
-    const sum_cell = document.createElement("td")
-    sum_cell.textContent = "$" + formatNumber(sum)
-    
     const last_row = document.createElement("tr")
+    last_row.appendChild(date_cell)
+    
+    const sum_label_cell = document.createElement("th")
+    sum_label_cell.textContent = "Sum:"
+
+    const sum_cell = document.createElement("th")
+    sum_cell.textContent = "$" + formatNumber(sum)
+
     last_row.appendChild(sum_label_cell)
     last_row.appendChild(sum_cell)
-    
+
     const tfoot = document.createElement("tfoot")
     tfoot.appendChild(last_row)
-    
+
     receipt_table.appendChild(tfoot)    
+} else {
+    document.getElementById("date_cell").textContent = date_str
 }
