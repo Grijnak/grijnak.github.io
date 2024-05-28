@@ -9,7 +9,7 @@
       table {
           text-align: left;
           line-height: 40px;
-          border-collapse: separate;
+          border-collapse: collapse;
           border-spacing: 0;
           border: 2px solid #95d6f4;
           width: 500px;
@@ -17,27 +17,31 @@
           border-radius: .25rem;
       }
 
-      thead,tfoot tr:first-child {
+      thead,tfoot {
           background: #95d6f4;
           border: none;
       }
 
-      th:first-child,
-      td:first-child {
-          padding: 0 15px 0 20px;
+      th:first-child {
+          text-align: center;
       }
 
-      tbody tr:hover {
+      tfoot th:first-child {
+          padding-left: 20px;
+          text-align: left;
+      }
+
+      tbody:hover {
           background-color: #f2f2f2;
           cursor: default;
       }
 
-      tbody tr:last-child td {
-          border: none;
+      tbody tr {
+          border-bottom: 1px solid #ddd;
       }
 
-      tbody td {
-          border-bottom: 1px solid #ddd;
+      tbody:last-of-type tr:last-child {
+          border: none;
       }
     </style>
   </head>
@@ -45,11 +49,7 @@
     <center>
       <p>Thank you for choosing Szanti's Flushiefund.</p>
       <p>
-        You can find my prices at
-        <a href="https://tinyurl.com/szanti">
-          https://tinyurl.com/szanti
-        </a>
-        .
+        You can find my prices at <a href="https://tinyurl.com/szanti">https://tinyurl.com/szanti</a>.
       </p>
       <p>
         Please also rate my <a href="https://www.torn.com/forums.php#/p=threads&f=10&t=16401308&b=0&a=0&start=0&to=24783764">trading thread</a>.
@@ -58,7 +58,7 @@
     <table id="receipt">
       <thead>
         <tr>
-          <th></th>
+          <th id="date_cell"></th>
           <th>Item</th>
           <th>Qty</th>
           <th>Price</th>
