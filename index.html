@@ -1,1 +1,70 @@
-<html><body><pre><script ="text/javascript">document.write(atob(window.location.search.substr(1).split('=').slice(1).join("")))</script></pre></body></html>
+<html>
+  <head>
+    <title>Trade Receipt</title>
+    <style type="text/css" media="screen">
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      table {
+          text-align: left;
+          line-height: 40px;
+          border-collapse: separate;
+          border-spacing: 0;
+          border: 2px solid #95d6f4;
+          width: 500px;
+          margin: auto;
+          border-radius: .25rem;
+      }
+
+      thead,tfoot tr:first-child {
+          background: #95d6f4;
+          border: none;
+      }
+
+      th:first-child,
+      td:first-child {
+          padding: 0 15px 0 20px;
+      }
+
+      tbody tr:hover {
+          background-color: #f2f2f2;
+          cursor: default;
+      }
+
+      tbody tr:last-child td {
+          border: none;
+      }
+
+      tbody td {
+          border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <center>
+      <p>Thank you for choosing Szanti's Flushiefund.</p>
+      <p>
+        You can find my prices at
+        <a href="https://tinyurl.com/szanti">
+          https://tinyurl.com/szanti
+        </a>
+        .
+      </p>
+      <p>
+        Please also rate my <a href="https://www.torn.com/forums.php#/p=threads&f=10&t=16401308&b=0&a=0&start=0&to=24783764">trading thread</a>.
+      </p>
+    </center>
+    <table id="receipt">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
+      </thead>
+    </table>
+    <script type="text/javascript" src="receipt_printer.js"></script>
+  </body>
+</html>
