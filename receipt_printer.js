@@ -77,7 +77,7 @@ items.forEach(item => {
         + id
         + "/large.png"
 
-    const img_cell = document.createElement("th")
+    const img_cell = document.createElement("td")
     img_cell.rowSpan = rows.length
     img_cell.appendChild(img)
 
