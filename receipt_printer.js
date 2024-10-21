@@ -18,6 +18,34 @@ function b64decode(b64){
     return n
 }
 
+const url_item_ids = [
+    282,
+    617,
+    384,
+    271,
+    273,
+    277,
+    263,
+    260,
+    272,
+    267,
+    258,
+    215,
+    281,
+    269,
+    266,
+    264,
+    274,
+    276,
+    268,
+    186,
+    618,
+    187,
+    385,
+    261,
+    206
+]
+
 const item_names = {
     282: "African Violet",
     617: "Banana Orchid",
@@ -57,8 +85,8 @@ const [time_str, ...items] =
       .split("&")
 
 items.forEach(item => {
-    const id = b64decode(item.slice(0,2))
-    const positions = item.slice(2,).split("=")
+    const id = url_item_ids[b64decode(item.charAt(0))]
+    const positions = item.slice(1,).split("=")
 
     const rows = []
 
@@ -73,7 +101,7 @@ items.forEach(item => {
               : [position.charAt(0), position.slice(1)]
 
         const [qty, price] = position_split.map(b64decode)
-        console.log(item_names[id], qty, price)
+
         cells[0].textContent = formatNumber(qty+1)
         cells[1].textContent = "$" + formatNumber(price)
         cells[2].textContent = "$" + formatNumber((qty+1)*price)
