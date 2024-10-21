@@ -7,7 +7,17 @@ function formatNumber(num) {
     split_number.unshift(String(num))
     return split_number.join(',')
 }
-      
+
+function b64decode(b64){
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+    let n = 0
+    for(const c of b64) {
+        n *= 64
+        n += charset.indexOf(c)
+    }
+    return n
+}
+
 const item_names = {
     282: "African Violet",
     617: "Banana Orchid",
@@ -38,7 +48,7 @@ const item_names = {
 
 const receipt_table = document.getElementById("receipt")
 let sum = 0
-      
+
 const [time_str, ...items] =
       window
       .location
@@ -47,21 +57,27 @@ const [time_str, ...items] =
       .split("&")
 
 items.forEach(item => {
-    const [id, positions_str] = item.split("=")
-        
+    const id = b64decode(item.slice(0,2))
+    const positions = item.slice(2,).split("=")
+
     const rows = []
-    
-    positions_str.split("_").forEach(position => {
+
+    positions.forEach(position => {
         const cells = [
             document.createElement("td"),
             document.createElement("td"),
             document.createElement("td")
-        ] 
-        const [qty, price] = position.split(".").map(Number)
-        cells[0].textContent = formatNumber(qty)
+        ]
+        const position_split = position.includes('.')
+              ? position.split(".")
+              : [position.charAt(0), position.slice(1)]
+
+        const [qty, price] = position_split.map(b64decode)
+        console.log(item_names[id], qty, price)
+        cells[0].textContent = formatNumber(qty+1)
         cells[1].textContent = "$" + formatNumber(price)
-        cells[2].textContent = "$" + formatNumber(qty*price)
-        sum += qty*price
+        cells[2].textContent = "$" + formatNumber((qty+1)*price)
+        sum += (qty+1)*price
         rows.push(cells)
     })
 
@@ -96,17 +112,17 @@ items.forEach(item => {
 
 const date_str =
     "Date: "
-    + new Date(Number(time_str.split("=")[1])*86400000)
-    .toLocaleDateString("en-UK", {day: "2-digit", month: "short", year: "2-digit"})
+      + new Date(b64decode(time_str)*86400000)
+      .toLocaleDateString("en-UK", {day: "2-digit", month: "short", year: "2-digit"})
 
-if(items.length > 1 || items[0].includes("_")) {
+if(items.length > 1 || items[0].includes("~")) {
     const date_cell = document.createElement("th")
     date_cell.textContent = date_str
     date_cell.colSpan = 3
 
     const last_row = document.createElement("tr")
     last_row.appendChild(date_cell)
-    
+
     const sum_label_cell = document.createElement("th")
     sum_label_cell.textContent = "Sum:"
 
@@ -119,7 +135,7 @@ if(items.length > 1 || items[0].includes("_")) {
     const tfoot = document.createElement("tfoot")
     tfoot.appendChild(last_row)
 
-    receipt_table.appendChild(tfoot)    
+    receipt_table.appendChild(tfoot)
 } else {
     document.getElementById("date_cell").textContent = date_str
 }
